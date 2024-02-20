@@ -1,6 +1,6 @@
 [build-system]
-requires = ["flit_core >=3.3,<4"]
-build-backend = "flit_core.buildapi"
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyheavydb"
@@ -15,6 +15,9 @@ classifiers = [
     "Topic :: Database",
     "Topic :: Scientific/Engineering",
 ]
+
+[tools.setuptools]
+py-modules = ["heavydb"]
 
 dependencies = [
     "thrift >=0.13.0",
