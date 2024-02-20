@@ -54,8 +54,8 @@ dev = [
 ]
 
 [project.urls]
-Home = "https://github.com/heavyai/heavydb"
-Source = "https://github.com/heavyai/heavydb"
+Home = "https://github.com/heavyai/pyheavydb"
+Source = "https://github.com/heavyai/pyheavydb"
 
 [tool.flit.module]
 name = "heavydb"
