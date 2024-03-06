@@ -9,7 +9,6 @@ from heavydb._parsers import ColumnDetails, _extract_column_details
 
 heavydb_host = os.environ.get('HEAVYDB_HOST', 'localhost')
 
-
 @pytest.mark.usefixtures("heavydb_server")
 class TestConnect:
     def test_host_specified(self):
@@ -114,6 +113,7 @@ class TestExtras:
                     scale=0,
                     comp_param=32,
                 ),
+                comment='comment_date_',
                 is_reserved_keyword=False,
                 src_name='',
             ),
@@ -128,6 +128,7 @@ class TestExtras:
                     scale=0,
                     comp_param=32,
                 ),
+                comment=None,
                 is_reserved_keyword=False,
                 src_name='',
             ),
@@ -142,6 +143,7 @@ class TestExtras:
                     scale=0,
                     comp_param=32,
                 ),
+                comment=None,
                 is_reserved_keyword=False,
                 src_name='',
             ),
@@ -156,6 +158,7 @@ class TestExtras:
                     scale=0,
                     comp_param=0,
                 ),
+                comment=None,
                 is_reserved_keyword=False,
                 src_name='',
             ),
@@ -170,6 +173,7 @@ class TestExtras:
                     scale=0,
                     comp_param=0,
                 ),
+                comment=None,
                 is_reserved_keyword=False,
                 src_name='',
             ),
@@ -184,6 +188,7 @@ class TestExtras:
                     scale=0,
                     comp_param=0,
                 ),
+                comment=None,
                 is_reserved_keyword=False,
                 src_name='',
             ),
@@ -200,6 +205,7 @@ class TestExtras:
                 comp_param=32,
                 encoding='DICT',
                 is_array=False,
+                comment='comment_date_',
             ),
             ColumnDetails(
                 name='trans',
@@ -210,6 +216,7 @@ class TestExtras:
                 comp_param=32,
                 encoding='DICT',
                 is_array=False,
+                comment=None,
             ),
             ColumnDetails(
                 name='symbol',
@@ -220,6 +227,7 @@ class TestExtras:
                 comp_param=32,
                 encoding='DICT',
                 is_array=False,
+                comment=None,
             ),
             ColumnDetails(
                 name='qty',
@@ -230,6 +238,7 @@ class TestExtras:
                 comp_param=0,
                 encoding='NONE',
                 is_array=False,
+                comment=None,
             ),
             ColumnDetails(
                 name='price',
@@ -240,6 +249,7 @@ class TestExtras:
                 comp_param=0,
                 encoding='NONE',
                 is_array=False,
+                comment=None,
             ),
             ColumnDetails(
                 name='vol',
@@ -250,6 +260,7 @@ class TestExtras:
                 comp_param=0,
                 encoding='NONE',
                 is_array=False,
+                comment=None,
             ),
         ]
         assert result == expected
