@@ -100,6 +100,41 @@ class TestURI:
 
 
 class TestExtras:
+    def test_extract_row_details_pre_ver8(self):
+        data = [
+            TColumnType(
+                col_name='date_',
+                col_type=TTypeInfo(
+                    type=6,
+                    encoding=4,
+                    nullable=True,
+                    is_array=False,
+                    precision=0,
+                    scale=0,
+                    comp_param=32,
+                ),
+                comment='remove this attr',
+                is_reserved_keyword=False,
+                src_name='',
+            ),
+        ]
+        delattr(data[0], 'comment')
+        result = _extract_column_details(data)
+        expected = [
+            ColumnDetails(
+                name='date_',
+                type='STR',
+                nullable=True,
+                precision=0,
+                scale=0,
+                comp_param=32,
+                encoding='DICT',
+                is_array=False,
+                comment= None
+            ),
+        ]
+        assert result == expected
+
     def test_extract_row_details(self):
         data = [
             TColumnType(
