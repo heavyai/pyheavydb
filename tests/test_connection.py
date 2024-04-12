@@ -9,7 +9,6 @@ from heavydb._parsers import ColumnDetails, _extract_column_details
 
 heavydb_host = os.environ.get('HEAVYDB_HOST', 'localhost')
 
-
 @pytest.mark.usefixtures("heavydb_server")
 class TestConnect:
     def test_host_specified(self):
@@ -101,6 +100,41 @@ class TestURI:
 
 
 class TestExtras:
+    def test_extract_row_details_pre_ver8(self):
+        data = [
+            TColumnType(
+                col_name='date_',
+                col_type=TTypeInfo(
+                    type=6,
+                    encoding=4,
+                    nullable=True,
+                    is_array=False,
+                    precision=0,
+                    scale=0,
+                    comp_param=32,
+                ),
+                comment='remove this attr',
+                is_reserved_keyword=False,
+                src_name='',
+            ),
+        ]
+        delattr(data[0], 'comment')
+        result = _extract_column_details(data)
+        expected = [
+            ColumnDetails(
+                name='date_',
+                type='STR',
+                nullable=True,
+                precision=0,
+                scale=0,
+                comp_param=32,
+                encoding='DICT',
+                is_array=False,
+                comment= None
+            ),
+        ]
+        assert result == expected
+
     def test_extract_row_details(self):
         data = [
             TColumnType(
@@ -114,6 +148,7 @@ class TestExtras:
                     scale=0,
                     comp_param=32,
                 ),
+                comment='comment_date_',
                 is_reserved_keyword=False,
                 src_name='',
             ),
@@ -128,6 +163,7 @@ class TestExtras:
                     scale=0,
                     comp_param=32,
                 ),
+                comment=None,
                 is_reserved_keyword=False,
                 src_name='',
             ),
@@ -142,6 +178,7 @@ class TestExtras:
                     scale=0,
                     comp_param=32,
                 ),
+                comment=None,
                 is_reserved_keyword=False,
                 src_name='',
             ),
@@ -156,6 +193,7 @@ class TestExtras:
                     scale=0,
                     comp_param=0,
                 ),
+                comment=None,
                 is_reserved_keyword=False,
                 src_name='',
             ),
@@ -170,6 +208,7 @@ class TestExtras:
                     scale=0,
                     comp_param=0,
                 ),
+                comment=None,
                 is_reserved_keyword=False,
                 src_name='',
             ),
@@ -184,6 +223,7 @@ class TestExtras:
                     scale=0,
                     comp_param=0,
                 ),
+                comment=None,
                 is_reserved_keyword=False,
                 src_name='',
             ),
@@ -200,6 +240,7 @@ class TestExtras:
                 comp_param=32,
                 encoding='DICT',
                 is_array=False,
+                comment='comment_date_',
             ),
             ColumnDetails(
                 name='trans',
@@ -210,6 +251,7 @@ class TestExtras:
                 comp_param=32,
                 encoding='DICT',
                 is_array=False,
+                comment=None,
             ),
             ColumnDetails(
                 name='symbol',
@@ -220,6 +262,7 @@ class TestExtras:
                 comp_param=32,
                 encoding='DICT',
                 is_array=False,
+                comment=None,
             ),
             ColumnDetails(
                 name='qty',
@@ -230,6 +273,7 @@ class TestExtras:
                 comp_param=0,
                 encoding='NONE',
                 is_array=False,
+                comment=None,
             ),
             ColumnDetails(
                 name='price',
@@ -240,6 +284,7 @@ class TestExtras:
                 comp_param=0,
                 encoding='NONE',
                 is_array=False,
+                comment=None,
             ),
             ColumnDetails(
                 name='vol',
@@ -250,6 +295,7 @@ class TestExtras:
                 comp_param=0,
                 encoding='NONE',
                 is_array=False,
+                comment=None,
             ),
         ]
         assert result == expected

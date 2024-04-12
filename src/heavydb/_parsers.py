@@ -31,6 +31,7 @@ ColumnDetails = namedtuple(
         "comp_param",
         "encoding",
         "is_array",
+        "comment",
     ],
 )
 
@@ -154,6 +155,8 @@ def _extract_column_details(row_desc):
             x.col_type.comp_param,
             _thrift_values_to_encodings[x.col_type.encoding],
             x.col_type.is_array,
+            # to maintain pre version 8 thrift
+            x.comment if hasattr(x, 'comment') else None,
         )
         for x in row_desc
     ]
