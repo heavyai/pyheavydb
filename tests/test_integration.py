@@ -79,7 +79,7 @@ class TestIntegration:
                 port=6274,
                 protocol='binary',
                 dbname='heavyai',
-                bin_cert_validate=True,
+                bin_cert_validate=bin_cert_validate,
                 bin_ca_certs=os.environ["INVALID_HEAVYDB_CERTFILE"],
             )
 
