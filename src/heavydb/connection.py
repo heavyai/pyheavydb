@@ -317,12 +317,12 @@ class Connection:
                 self._session = self._client.connect(user, password, dbname)
         except TDBException as e:
             raise _translate_exception(e) from e
-        except TTransportException:
+        except TTransportException as e:
             raise ValueError(
                 f"Connection failed with port {port} and "
                 f"protocol '{protocol}'. Try port 6274 for "
                 "protocol == binary or 6273, 6278 or 443 for "
-                "http[s]"
+                f"http[s]. Error encountered: " + str(e)
             )
 
         # if HeavyDB version <4.6, raise RuntimeError, as data import can be
