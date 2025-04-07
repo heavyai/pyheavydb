@@ -2,11 +2,13 @@
 
 Connect to an HeavyDB database.
 """
+import ssl
 from collections import namedtuple
 from sqlalchemy.engine.url import make_url
 from thrift.protocol import TBinaryProtocol, TJSONProtocol
 from thrift.transport import TSocket, TSSLSocket, THttpClient, TTransport
 from thrift.transport.TSocket import TTransportException
+from thrift.transport.TSSLSocket import TSSLBase
 from heavydb.thrift.Heavy import Client
 from heavydb.thrift.ttypes import TDBException
 
@@ -238,12 +240,28 @@ class Connection:
             socket = None
         elif protocol == "binary":
             if any([bin_cert_validate is not None, bin_ca_certs]):
-                socket = TSSLSocket.TSSLSocket(
-                    host,
-                    port,
-                    validate=(bin_cert_validate),
-                    ca_certs=bin_ca_certs,
-                )
+                if TSSLBase._has_ssl_context: # Check version of Python is 
+                                              # recent enough and compatible
+                    ssl_context = ssl.create_default_context(
+                            purpose=ssl.Purpose.SERVER_AUTH,cafile=bin_ca_certs)
+
+                    # Only disable certificate validation if it is explicitly marked
+                    if bin_cert_validate is not None and bin_cert_validate == False:
+                        ssl_context.check_hostname = False
+                        ssl_context.verify_mode = ssl.CERT_NONE
+
+                    socket = TSSLSocket.TSSLSocket(
+                        host,
+                        port,
+                        ssl_context=ssl_context,
+                    )
+                else:
+                    socket = TSSLSocket.TSSLSocket(
+                        host,
+                        port,
+                        validate=(bin_cert_validate),
+                        ca_certs=bin_ca_certs,
+                    )
             else:
                 socket = TSocket.TSocket(host, port)
             transport = TTransport.TBufferedTransport(socket)
@@ -299,12 +317,12 @@ class Connection:
                 self._session = self._client.connect(user, password, dbname)
         except TDBException as e:
             raise _translate_exception(e) from e
-        except TTransportException:
+        except TTransportException as e:
             raise ValueError(
                 f"Connection failed with port {port} and "
                 f"protocol '{protocol}'. Try port 6274 for "
                 "protocol == binary or 6273, 6278 or 443 for "
-                "http[s]"
+                f"http[s]. Error encountered: " + str(e)
             )
 
         # if HeavyDB version <4.6, raise RuntimeError, as data import can be

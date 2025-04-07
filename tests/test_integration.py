@@ -30,6 +30,71 @@ class TestIntegration:
         )
         assert con is not None
 
+
+    @pytest.mark.parametrize("bin_cert_validate",[True,None])
+    def test_connect_binary_ssl_validate_cert_given_valid_cert(self,bin_cert_validate):
+        assert "VALID_HEAVYDB_CERTFILE" in os.environ, "Test requires certificate file for HeavyDB"\
+        " to connect securely, specified in environment variable VALID_HEAVYDB_CERTFILE"
+        con = connect(
+            user="admin",
+            password='HyperInteractive',
+            host=heavydb_host,
+            port=6274,
+            protocol='binary',
+            dbname='heavyai',
+            bin_cert_validate=bin_cert_validate,
+            bin_ca_certs=os.environ["VALID_HEAVYDB_CERTFILE"],
+        )
+        assert con is not None
+
+
+    def test_connect_binary_ssl_donotvalidate_cert_given_valid_cert(self):
+        assert "VALID_HEAVYDB_CERTFILE" in os.environ, "Test requires certificate file for HeavyDB"\
+        " to connect securely, specified in environment variable VALID_HEAVYDB_CERTFILE"
+        con = connect(
+            user="admin",
+            password='HyperInteractive',
+            host=heavydb_host,
+            port=6274,
+            protocol='binary',
+            dbname='heavyai',
+            bin_cert_validate=False,
+            bin_ca_certs=os.environ["VALID_HEAVYDB_CERTFILE"],
+        )
+        assert con is not None
+
+
+    @pytest.mark.parametrize("bin_cert_validate",[True,None])
+    def test_connect_binary_ssl_validate_cert_given_invalid_cert(self,bin_cert_validate):
+        assert "INVALID_HEAVYDB_CERTFILE" in os.environ, "Test requires invalid"\
+        " certificate file for HeavyDB, specified in environment variable INVALID_HEAVYDB_CERTFILE"
+        with pytest.raises(Exception, match=r'Could not connect to database'):
+            con = connect(
+                user="admin",
+                password='HyperInteractive',
+                host=heavydb_host,
+                port=6274,
+                protocol='binary',
+                dbname='heavyai',
+                bin_cert_validate=bin_cert_validate,
+                bin_ca_certs=os.environ["INVALID_HEAVYDB_CERTFILE"],
+            )
+
+    def test_connect_binary_ssl_donotvalidate_cert_given_invalid_cert(self):
+        assert "INVALID_HEAVYDB_CERTFILE" in os.environ, "Test requires invalid"\
+        " certificate file for HeavyDB, specified in environment variable INVALID_HEAVYDB_CERTFILE"
+        con = connect(
+            user="admin",
+            password='HyperInteractive',
+            host=heavydb_host,
+            port=6274,
+            protocol='binary',
+            dbname='heavyai',
+            bin_cert_validate=False,
+            bin_ca_certs=os.environ["INVALID_HEAVYDB_CERTFILE"],
+        )
+        assert con is not None
+
     def test_connect_http(self):
         con = connect(
             user="admin",
