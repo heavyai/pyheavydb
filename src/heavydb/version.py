@@ -8,7 +8,7 @@ def get_source_version():
     try:
         f = open(os.path.join(here, '..', '..', 'CMakeLists.txt'))
     except FileNotFoundError:
-        return None
+        return "Unknown Version - pyheavydb package not found"
     for line in f.readlines():
         if line.lstrip().startswith('set(MAPD_VERSION_'):
             k = line.split()[0].rsplit('_', 1)[-1]
