@@ -1,15 +1,17 @@
 name: Release
+run-name: ${{ inputs.description != '' && format('pyheavydb — {0}', inputs.description) || 'pyheavydb Release' }}
 
 on:
-  push:
-    branches:
-      - misiug/gh-actions-release
   workflow_dispatch:
     inputs:
       release_candidate:
         description: 'Branch or SHA to build'
         type: string
         default: 'master'
+      description:
+        description: 'Build description label'
+        type: string
+        default: ''
 
 jobs:
   build:
@@ -44,7 +46,11 @@ jobs:
         run: |
           SHA="${{ github.sha }}"
           TAG="pyheavydb-${SHA::8}"
+          TITLE="pyheavydb ${TAG}"
+          if [ -n "${{ inputs.description }}" ]; then
+            TITLE="$TITLE — ${{ inputs.description }}"
+          fi
           gh release create "$TAG" dist/*.whl \
             --repo "${{ github.repository }}" \
-            --title "pyheavydb ${TAG}" \
+            --title "$TITLE" \
             --notes "Built from \`${{ inputs.release_candidate }}\` (${SHA}) — run [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
