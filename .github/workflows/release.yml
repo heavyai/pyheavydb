@@ -1,0 +1,56 @@
+name: Release
+run-name: ${{ inputs.description != '' && format('pyheavydb — {0}', inputs.description) || 'pyheavydb Release' }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_candidate:
+        description: 'Branch or SHA to build'
+        type: string
+        default: 'master'
+      description:
+        description: 'Build description label'
+        type: string
+        default: ''
+
+jobs:
+  build:
+    runs-on: linux-amd64-cpu16
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.release_candidate }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install thrift compiler and build tools
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q thrift-compiler
+          pip install build
+
+      - name: Generate thrift bindings and build wheel
+        run: |
+          make thrift
+          python -m build --wheel
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          SHA="${{ github.sha }}"
+          TAG="pyheavydb-${SHA::8}"
+          TITLE="pyheavydb ${TAG}"
+          if [ -n "${{ inputs.description }}" ]; then
+            TITLE="$TITLE — ${{ inputs.description }}"
+          fi
+          gh release create "$TAG" dist/*.whl \
+            --repo "${{ github.repository }}" \
+            --title "$TITLE" \
+            --notes "Built from \`${{ inputs.release_candidate }}\` (${SHA}) — run [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
