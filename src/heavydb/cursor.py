@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
 import heavydb.thrift.ttypes as T
 from .exceptions import _translate_exception
 from ._parsers import _bind_parameters, _extract_description, _extract_col_vals
