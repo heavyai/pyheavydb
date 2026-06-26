@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
 from heavydb.cursor import make_row_results_set
 from heavydb.thrift.ttypes import (
     TRowSet,
