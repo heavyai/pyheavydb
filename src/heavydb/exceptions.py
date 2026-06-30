@@ -10,6 +10,31 @@ exceptions to the ones defined here.
 from heavydb.thrift.ttypes import TDBException
 
 
+_EXCEPTION_STATE_ATTRS = {
+    '__traceback__',
+    '__context__',
+    '__cause__',
+    '__suppress_context__',
+}
+
+
+def _patch_tdb_exception_state_attrs():
+    original_setattr = TDBException.__setattr__
+    if getattr(original_setattr, '_heavydb_allows_exception_state', False):
+        return
+
+    def __setattr__(self, name, value):
+        if name in _EXCEPTION_STATE_ATTRS:
+            return BaseException.__setattr__(self, name, value)
+        return original_setattr(self, name, value)
+
+    __setattr__._heavydb_allows_exception_state = True
+    TDBException.__setattr__ = __setattr__
+
+
+_patch_tdb_exception_state_attrs()
+
+
 class Warning(Exception):
     """Emitted for important warnings, e.g. data truncatiions"""
 

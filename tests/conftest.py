@@ -7,9 +7,6 @@ import time
 from uuid import uuid4
 
 import pytest
-from thrift.transport import TSocket, TTransport
-from thrift.transport.TSocket import TTransportException
-from heavydb import connect
 import random
 import string
 
@@ -20,6 +17,9 @@ def _check_open():
     """
     Test to see if HeavyDB running on localhost and socket open
     """
+    from thrift.transport import TSocket, TTransport
+    from thrift.transport.TSocket import TTransportException
+
     socket = TSocket.TSocket(heavydb_host, 6274)
     transport = TTransport.TBufferedTransport(socket)
 
@@ -65,6 +65,8 @@ def con(heavydb_server):
     """
     Fixture to provide Connection for tests run against live HeavyDB instance
     """
+    from heavydb import connect
+
     return connect(
         user="admin",
         password='HyperInteractive',

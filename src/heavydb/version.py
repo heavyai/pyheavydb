@@ -2,7 +2,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os
-import importlib_metadata
+
+try:
+    from importlib import metadata as importlib_metadata
+except ImportError:
+    import importlib_metadata
 
 
 def get_source_version():

@@ -36,6 +36,7 @@ ColumnDetails = namedtuple(
         "is_array",
         "comment",
     ],
+    defaults=[None],
 )
 
 _typeattr = {
