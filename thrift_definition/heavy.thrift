@@ -26,8 +26,7 @@ enum TSourceType {
 
 enum TPartitionDetail {
   DEFAULT,
-  REPLICATED,
-  SHARDED,
+  SHARDED = 2,
   OTHER
 }
 
@@ -233,10 +232,6 @@ struct TCopyParams {
   44: string bounding_box_clip;
 }
 
-struct TCreateParams {
-  1: bool is_replicated;
-}
-
 struct TDetectResult {
   1: TRowSet row_set;
   2: TCopyParams copy_params;
@@ -335,7 +330,6 @@ struct TTableMeta {
   1: string table_name;
   2: i64 num_cols;
   4: bool is_view;
-  5: bool is_replicated;
   6: i64 shard_count;
   7: i64 max_rows;
   8: i64 table_id;
@@ -425,7 +419,7 @@ union TDBObjectPermissions {
 }
 
 enum TDBObjectType {
-  AbstractDBObjectType = 0,
+  AbstractDBObjectType,
   DatabaseDBObjectType,
   TableDBObjectType,
   DashboardDBObjectType,
@@ -590,9 +584,9 @@ service Heavy {
   void load_table_binary_arrow(1: TSessionId session, 2: string table_name, 3: binary arrow_stream, 4: bool use_column_names = false) throws (1: TDBException e)
   void load_table(1: TSessionId session, 2: string table_name, 3: list<TStringRow> rows, 4: list<string> column_names = {}) throws (1: TDBException e)
   TDetectResult detect_column_types(1: TSessionId session, 2: string file_name, 3: TCopyParams copy_params) throws (1: TDBException e)
-  void create_table(1: TSessionId session, 2: string table_name, 3: TRowDescriptor row_desc, 4: TCreateParams create_params) throws (1: TDBException e)
+  void create_table(1: TSessionId session, 2: string table_name, 3: TRowDescriptor row_desc) throws (1: TDBException e)
   void import_table(1: TSessionId session, 2: string table_name, 3: string file_name, 4: TCopyParams copy_params) throws (1: TDBException e)
-  void import_geo_table(1: TSessionId session, 2: string table_name, 3: string file_name, 4: TCopyParams copy_params, 5: TRowDescriptor row_desc, 6: TCreateParams create_params) throws (1: TDBException e)
+  void import_geo_table(1: TSessionId session, 2: string table_name, 3: string file_name, 4: TCopyParams copy_params, 5: TRowDescriptor row_desc) throws (1: TDBException e)
   TImportStatus import_table_status(1: TSessionId session, 2: string import_id) throws (1: TDBException e)
   string get_first_geo_file_in_archive(1: TSessionId session, 2: string archive_path, 3: TCopyParams copy_params) throws (1: TDBException e)
   list<string> get_all_files_in_archive(1: TSessionId session, 2: string archive_path, 3: TCopyParams copy_params) throws (1: TDBException e)
