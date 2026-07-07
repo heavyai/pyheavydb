@@ -46,6 +46,7 @@ Update the version number in `pyproject.toml`, then build locally:
 ```shell
 python -m pip install --upgrade build twine
 make build
+python -m twine check dist/*
 ```
 
 Upload to TestPyPI first and verify the package in a clean environment:

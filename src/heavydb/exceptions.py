@@ -15,6 +15,7 @@ _EXCEPTION_STATE_ATTRS = {
     '__context__',
     '__cause__',
     '__suppress_context__',
+    '__notes__',
 }
 
 

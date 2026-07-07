@@ -2,13 +2,17 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os
+import random
+import string
 import subprocess
 import time
 from uuid import uuid4
 
 import pytest
-import random
-import string
+from thrift.transport import TSocket, TTransport
+from thrift.transport.TSocket import TTransportException
+
+from heavydb import connect
 
 heavydb_host = os.environ.get('HEAVYDB_HOST', 'localhost')
 
@@ -17,9 +21,6 @@ def _check_open():
     """
     Test to see if HeavyDB running on localhost and socket open
     """
-    from thrift.transport import TSocket, TTransport
-    from thrift.transport.TSocket import TTransportException
-
     socket = TSocket.TSocket(heavydb_host, 6274)
     transport = TTransport.TBufferedTransport(socket)
 
@@ -65,8 +66,6 @@ def con(heavydb_server):
     """
     Fixture to provide Connection for tests run against live HeavyDB instance
     """
-    from heavydb import connect
-
     return connect(
         user="admin",
         password='HyperInteractive',
