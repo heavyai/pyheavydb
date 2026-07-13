@@ -34,8 +34,8 @@ def test_tdb_exception_can_propagate_through_contextlib():
     def passthrough():
         yield
 
-    # contextlib re-raises through BaseException state; the generated
-    # immutable __setattr__ used to mask TDBException with TypeError here.
+    # This propagation path used to mask TDBException with TypeError
+    # when generated immutable __setattr__ rejected exception-state updates.
     with pytest.raises(TDBException, match='server error'):
         with passthrough():
             raise TDBException('server error')
