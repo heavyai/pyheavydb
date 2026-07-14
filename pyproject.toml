@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyheavydb"
-version = "8.0.1.post1"
+version = "10.0.0"
 requires-python = ">=3.10"
 authors = [{name = "Heavy.AI", email = "community@heavy.ai"}]
 description = "A DB API 2 compatible client for HeavyDB (formerly OmniSci and MapD)."
@@ -24,8 +24,8 @@ dependencies = [
     "requests >= 2.23.0",
 ]
 
-[tools.setuptools]
-py-modules = ["heavydb"]
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [project.optional-dependencies]
 rbc = [

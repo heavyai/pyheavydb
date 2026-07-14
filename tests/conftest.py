@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os
+import random
+import string
 import subprocess
 import time
 from uuid import uuid4
@@ -9,9 +11,8 @@ from uuid import uuid4
 import pytest
 from thrift.transport import TSocket, TTransport
 from thrift.transport.TSocket import TTransportException
+
 from heavydb import connect
-import random
-import string
 
 heavydb_host = os.environ.get('HEAVYDB_HOST', 'localhost')
 

@@ -41,6 +41,30 @@ These instruction need to be run from the project directory.
 6. pytest test/test_results_set.py
 
 ### Release
-Update the version numbers appropriately and run and `make publish` 
-Releasing on PyPi assume you have a PyPi token in your environment.
+Update the version number in `pyproject.toml`, then build locally:
+
+```shell
+python -m pip install --upgrade build twine
+make build
+python -m twine check dist/*
+```
+
+Upload to TestPyPI first and verify the package in a clean environment:
+
+```shell
+python -m twine upload --repository testpypi dist/*
+python -m venv /tmp/pyheavydb-testpypi
+. /tmp/pyheavydb-testpypi/bin/activate
+python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ pyheavydb==<version>
+python -c "import heavydb; print(heavydb.__version__)"
+```
+
+After TestPyPI validation, upload the same version to PyPI:
+
+```shell
+python -m twine upload dist/*
+```
+
+Use `__token__` as the username when prompted for a PyPI or TestPyPI API
+token. A version cannot be reused on an index after upload.
 
