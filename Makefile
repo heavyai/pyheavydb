@@ -1,6 +1,16 @@
 
+THRIFT_CONFIG := ci/thrift.env
+include $(THRIFT_CONFIG)
+
+.PHONY: check-thrift-config
+check-thrift-config:
+	@grep -Fq '"thrift >=$(THRIFT_VERSION)"' pyproject.toml || { echo "pyproject.toml Thrift minimum must match $(THRIFT_CONFIG) ($(THRIFT_VERSION))" >&2; exit 1; }
+	@grep -Fqx -- '- thrift>=$(THRIFT_VERSION)' environment.yml || { echo "environment.yml Thrift minimum must match $(THRIFT_CONFIG) ($(THRIFT_VERSION))" >&2; exit 1; }
+
 .PHONY: thrift
-thrift:
+thrift: check-thrift-config
+	@actual_version="$$(thrift -version)"; \
+		test "$$actual_version" = "Thrift version $(THRIFT_VERSION)" || { echo "Expected Thrift version $(THRIFT_VERSION), got $$actual_version" >&2; exit 1; }
 	rm -rf src/heavydb/thrift/
 	mkdir -p src/heavydb/thrift/
 	mkdir -p src/heavydb/common/
@@ -36,6 +46,8 @@ publish: build
 .PHONY: clean
 clean:
 	rm -rf dist
+	rm -rf build
+	rm -rf src/*.egg-info
 	rm -rf gen-py
 	rm -rf src/heavydb/thrift/
 	rm -rf src/heavydb/common

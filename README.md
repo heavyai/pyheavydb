@@ -14,7 +14,7 @@ interface for [HeavyDB](https://www.heavy.ai/) (formerly OmniSci and MapD).
 
 1. Requires Python >= 3.10
 2. Clone the repository and navigate to the project directory.
-3. The build rquires the thrift executable. See [thrift](https://thrift.apache.org) installed.  Make sure the directory containing the thrift binary is on your PATH.
+3. Requires the Apache Thrift compiler version pinned in `ci/thrift.env`. Make sure the directory containing the `thrift` binary is on your `PATH`.
 Note - It's recommened to install a virtual python environment.  In these instuction pip is used,
 4. python3 -m venv venv
 5. . ./venv/bin/activate
