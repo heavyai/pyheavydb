@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 
+import sys
 from contextlib import contextmanager
 
 import pytest
@@ -20,6 +21,7 @@ def test_tdb_exception_allows_python_exception_state_attrs():
         err.error_msg = 'changed'
 
 
+@pytest.mark.skipif(sys.version_info < (3, 11), reason="BaseException.add_note() requires Python 3.11+")
 def test_tdb_exception_allows_python_exception_notes():
     err = TDBException('server error')
 
